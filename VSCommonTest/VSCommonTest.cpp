@@ -8,6 +8,7 @@
 #include <memory>
 #include <fstream>
 #include <OpencvCommon.h>
+#include <map>
 
 REGISTER;
 
@@ -21,6 +22,22 @@ inline void testInlineFunc()
 
 }
 
+namespace cv
+{
+	inline bool operator<(const cv::Rect &A, const cv::Rect &B)
+	{
+		if (A.x < B.x) return true;
+		if (A.x == B.x) {
+			if (A.y < B.y) return true;
+			if (A.y == B.y) {
+				if (A.width < B.width) return true;
+				if (A.width == B.width)
+					if (A.height < B.height) return true;
+			}
+		}
+		return false;
+	}
+}
 
 
 int main(int *argc, char *argv[])
@@ -117,6 +134,7 @@ int main(int *argc, char *argv[])
 	double a = 0.1;
 	std::cout << "log(a) = " << log(a) << std::endl;
 	std::cout << "exp(log(a)) = " << exp(log(a)) << std::endl;
+	std::cout << "norm(test3V) = " << cv::norm(test3V/*, cv::NORM_L2SQR*/) << std::endl;
 
 	char testArr[1024];
 	testArr[0] = '1';
@@ -134,6 +152,49 @@ int main(int *argc, char *argv[])
 
 	std::string testStr = "Hello World";
 	testStr.replace(1, 2, "NIMA");
+
+	uchar v = '\0';
+	v++;
+	int vcount = v;
+
+	testStr = "123 123 12";
+	std::stringstream ioStr;
+	ioStr << testStr;
+	std::vector<int> vInts;
+	int intValue = 0;
+	while (ioStr >> intValue)
+	{
+		vInts.push_back(intValue);
+	}
+	//ioStr.clear();
+	ioStr << "12 23";
+	while (ioStr >> intValue)
+	{
+		vInts.push_back(intValue);
+	}
+
+	{
+		std::fstream fs2("test.txt", std::ios::out);
+		fs2 << 12 << " " << 23 << std::endl;
+		fs2 << 56 << " " << 78 << std::endl;
+		fs2.close();
+	}
+	
+
+	std::fstream fs2("test.txt", std::ios::in);
+	int c, d;
+	fs2 >> c >> d;
+	std::string line;
+	std::getline(fs2, line);
+	std::getline(fs2, line);
+
+	std::map<cv::Rect, int> testMap;
+	cv::Rect rect(0, 0, 1, 1);
+	testMap.find(rect);
+
+	double dtest = 0.99999;
+	int itest = std::round(dtest);
+	std::cout << "itest = " << itest << std::endl;
 	
 	return 0;
 }
