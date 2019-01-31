@@ -39,9 +39,78 @@ namespace cv
 	}
 }
 
+enum TestEnum{RIGHT};
+enum PixelSelectorStatus { PIXSEL_VOID = 0, PIXSEL_1, PIXSEL_2, PIXSEL_3 };
+
+class TestClass
+{
+public:
+	TestClass() : a{1, 2}
+	{
+		std::cout << "The constructor of TestClass" << std::endl;
+	}
+	~TestClass() {}
+
+	void printA()
+	{
+		std::cout << "a[0] = " << a[0] << ", a[1] = " << a[1] << std::endl;
+	}
+
+private:
+	int a[2];
+};
+
 
 int main(int *argc, char *argv[])
 {
+	/*for (size_t i = 0; i < 128; i++)
+	{
+		int cID = i;
+		char cChar = cID;
+		uchar cUChar = cChar;
+		std::cout << "char ID = " << cID << "; cChar = " << cChar
+			<< "; cUChar = " << cUChar << std::endl;
+	}*/
+
+	double testFloat = 1.00000000000651;
+	if (testFloat == 1.000000000)
+	{
+		std::cout << testFloat << std::endl;
+	}
+
+	char * p1 = new char[10];
+	char * p2 = new char[10];
+
+	for (size_t i = 0; i < 9; i++)
+	{
+		p1[i] = 'a' + i;
+		p2[i] = 'f' + i;
+	}
+
+	p1[9] = '\0';
+	p2[9] = '\0';
+
+	std::shared_ptr<char> testcPointer3;
+	{
+		std::shared_ptr<char> testcPointer1(p1,
+										   [&](char *data)
+		{
+			std::cout << data << " delete 1" << std::endl;
+			delete data;
+		});
+
+		std::shared_ptr<char> testcPointer2(p2,
+											[&](char *data)
+		{
+			std::cout << data << " delete 2" << std::endl;
+			delete data;
+		});
+
+		testcPointer3 = testcPointer2;
+	}
+
+	//testcPointer3.reset();
+
 	std::cout << MathFuncs::MyMathFuncs::Add(1, 2) << std::endl;
 	std::cout << add(3.0, 4.0) << std::endl;
 	std::cout << mul(3, 4) << std::endl;
@@ -150,8 +219,15 @@ int main(int *argc, char *argv[])
 	std::cout << "int size = " << sizeof(int) << " bytes" << std::endl;
 	std::cout << "float size = " << sizeof(float) << " bytes" << std::endl;
 
-	std::string testStr = "Hello World";
+	std::string testStr = "Hello World\\";
 	testStr.replace(1, 2, "NIMA");
+	std::string path = testStr.substr(0, testStr.find_last_of("/\\"));
+	std::string emptyStr = "sdfa";
+	emptyStr = "";
+	if (emptyStr.empty())
+	{
+		std::cout << "EmptyStr is equal to \"\"" << std::endl;
+	}
 
 	uchar v = '\0';
 	v++;
@@ -195,6 +271,15 @@ int main(int *argc, char *argv[])
 	double dtest = 0.99999;
 	int itest = std::round(dtest);
 	std::cout << "itest = " << itest << std::endl;
-	
+
+	cv::Mat arrowTest(100, 100, CV_8UC3, cv::Scalar(255, 255, 255));
+
+	cv::arrowedLine(arrowTest, cv::Point(50, 50), cv::Point(50 + 1, 50 + 1), cv::Scalar(0, 0, 255), 1, cv::LineTypes::LINE_AA, 0, 0.1);
+
+	size_t ts = sizeof(PixelSelectorStatus);
+
+	TestClass tc;
+	tc.printA();
+
 	return 0;
 }

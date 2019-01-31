@@ -36,7 +36,7 @@ public:
 		std::cout << "This is the destructor of class B" << std::endl; 
 	}
 	std::shared_ptr<ClassA> mpA;
-	std::shared_ptr<ClassB> mpB;
+	std::weak_ptr<ClassB> mpB;
 
 private:
 
@@ -52,6 +52,9 @@ int main(int argc, char *argv[])
 	pB->mpB = pB;
 	//pA->mpB = pB;
 	//pB->mpB.reset();
+	std::cout << "pB use_count = " << pB.use_count() << std::endl;
+	std::shared_ptr<ClassB> pB_ = pB->mpB.lock();
+	std::cout << "pB use_count = " << pB.use_count() << std::endl;
 
 	std::shared_ptr<ClassA> pNULL = NULL;
 	std::cout << "pNULL use_count = " << pNULL.use_count() << std::endl;
